@@ -66,8 +66,8 @@ fn main() -> Result<(), Box<dyn Error>> {
   drop(render_tx);
   render_handle.join().unwrap();
   audio.wait();
-  stdout.execute(terminal::LeaveAlternateScreen)?;
   stdout.execute(cursor::Show)?;
+  stdout.execute(terminal::LeaveAlternateScreen)?;
   terminal::disable_raw_mode()?;
 
   Ok(())
