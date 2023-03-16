@@ -21,10 +21,10 @@ impl Invaders {
     for x in 0..NUM_COLS {
       for y in 0..NUM_ROWS {
         if (1 < x) && (x < NUM_COLS - 2)
-          && (0 < y) && (y < 9)
-          && (x % 2 == 0) && (y % 2 == 0) {
-            fleet.push(Invader { x, y });
-          }
+           && (0 < y) && (y < 9)
+           && (x % 2 == 0) && (y % 2 == 0) {
+          fleet.push(Invader { x, y });
+        }
       }
     }
 
@@ -60,6 +60,19 @@ impl Invaders {
           inv.x = ((inv.x as i32) + self.direction) as usize;
         }
       }
+      true
+    } else {
+      false
+    }
+  }
+
+  pub fn all_killed(&self) -> bool { self.fleet.is_empty() }
+
+  pub fn reached_bottom(&self) -> bool { self.fleet.iter().map(|inv| inv.y).max().unwrap_or(0) >= NUM_ROWS - 1 }
+
+  pub fn killed_at(&mut self, x: usize, y: usize) -> bool {
+    if let Some(i) = self.fleet.iter().position(|inv| (inv.x == x) && (inv.y == y)) {
+      self.fleet.remove(i);
       true
     } else {
       false
