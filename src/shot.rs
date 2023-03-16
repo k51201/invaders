@@ -13,7 +13,7 @@ pub struct Shot {
 
 impl Shot {
   pub fn new(x: usize, y: usize) -> Self {
-    Self { x: x, y: y, exploding: false, timer: Timer::from_millis(50) }
+    Self { x, y, exploding: false, timer: Timer::from_millis(50) }
   }
 
   pub fn update(&mut self, delta: Duration) {

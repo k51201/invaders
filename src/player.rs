@@ -61,3 +61,9 @@ impl Drawable for Player {
       }
   }
 }
+
+impl Default for Player {
+  fn default() -> Self {
+    Self::new()
+  }
+}
