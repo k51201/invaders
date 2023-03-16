@@ -1,69 +1,79 @@
 use std::time::Duration;
 
-use crate::{NUM_ROWS, NUM_COLS, frame::{Drawable, Frame}, shot::Shot, invaders::Invaders};
+use crate::{
+    frame::{Drawable, Frame},
+    invaders::Invaders,
+    shot::Shot,
+    NUM_COLS, NUM_ROWS,
+};
 
 pub struct Player {
-  x: usize,
-  y: usize,
-  shots: Vec<Shot>,
+    x: usize,
+    y: usize,
+    shots: Vec<Shot>,
 }
 
 impl Player {
-  pub fn new() -> Self {
-    Self { x: NUM_COLS / 2, y: NUM_ROWS - 1, shots: Vec::new() }
-  }
-
-  pub fn move_left(&mut self) {
-    if self.x > 0 {
-      self.x -= 1;
+    pub fn new() -> Self {
+        Self {
+            x: NUM_COLS / 2,
+            y: NUM_ROWS - 1,
+            shots: Vec::new(),
+        }
     }
-  }
 
-  pub fn move_right(&mut self) {
-    if self.x < NUM_COLS - 1 {
-      self.x += 1;
+    pub fn move_left(&mut self) {
+        if self.x > 0 {
+            self.x -= 1;
+        }
     }
-  }
 
-  pub fn shoot(&mut self) -> bool {
-    if self.shots.len() < 2 {
-      self.shots.push(Shot::new(self.x, self.y - 1));
-      true
-    } else {
-      false
+    pub fn move_right(&mut self) {
+        if self.x < NUM_COLS - 1 {
+            self.x += 1;
+        }
     }
-  }
 
-  pub fn update(&mut self, delta: Duration) {
-    for shot in self.shots.iter_mut() {
-      shot.update(delta);
+    pub fn shoot(&mut self) -> bool {
+        if self.shots.len() < 2 {
+            self.shots.push(Shot::new(self.x, self.y - 1));
+            true
+        } else {
+            false
+        }
     }
-    self.shots.retain(|shot| !shot.dead());
-  }
 
-  pub fn detect_hits(&mut self, invaders: &mut Invaders) -> bool {
-    let mut hit_made = false;
-    self.shots.iter_mut()
-      .filter(|shot| !shot.exploding && invaders.killed_at(shot.x, shot.y))
-      .for_each(|shot| {
-        hit_made = true;
-        shot.explode();
-      });
-    hit_made
-  }
+    pub fn update(&mut self, delta: Duration) {
+        for shot in self.shots.iter_mut() {
+            shot.update(delta);
+        }
+        self.shots.retain(|shot| !shot.dead());
+    }
+
+    pub fn detect_hits(&mut self, invaders: &mut Invaders) -> bool {
+        let mut hit_made = false;
+        self.shots
+            .iter_mut()
+            .filter(|shot| !shot.exploding && invaders.killed_at(shot.x, shot.y))
+            .for_each(|shot| {
+                hit_made = true;
+                shot.explode();
+            });
+        hit_made
+    }
 }
 
 impl Drawable for Player {
-  fn draw(&self, frame: &mut Frame) {
-      frame[self.x][self.y] = "A";
-      for shot in self.shots.iter() {
-        shot.draw(frame);
-      }
-  }
+    fn draw(&self, frame: &mut Frame) {
+        frame[self.x][self.y] = "A";
+        for shot in self.shots.iter() {
+            shot.draw(frame);
+        }
+    }
 }
 
 impl Default for Player {
-  fn default() -> Self {
-    Self::new()
-  }
+    fn default() -> Self {
+        Self::new()
+    }
 }
